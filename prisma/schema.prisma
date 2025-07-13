@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  clerkId   String     @unique
+  name      String?
+  workouts  Workout[]
+  activities Activity[] // ✅ Add this line to fix the relation
+  createdAt DateTime   @default(now())
+}
+
+model Workout {
+  id        String       @id @default(cuid())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  type      WorkoutType
+  count     Int
+  loggedAt  DateTime     @default(now())
+}
+
+model Activity {
+  id        String     @id @default(cuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  action    String     // e.g., "Did 50 pushups"
+  createdAt DateTime   @default(now())
+}
+
+enum WorkoutType {
+  PUSHUP
+  SQUAT
+  BURPEE
+}
