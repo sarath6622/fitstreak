@@ -7,35 +7,51 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model User {
-  id        String     @id @default(cuid())
-  clerkId   String     @unique
-  name      String?
-  workouts  Workout[]
-  activities Activity[] // ✅ Add this line to fix the relation
-  createdAt DateTime   @default(now())
+  id         String         @id @default(cuid())
+  clerkId    String         @unique
+  name       String?
+  createdAt  DateTime       @default(now())
+  workouts   Workout[]
+  activities Activity[]
 }
 
 model Workout {
-  id        String       @id @default(cuid())
-  user      User         @relation(fields: [userId], references: [id])
-  userId    String
-  type      WorkoutType
-  count     Int
-  loggedAt  DateTime     @default(now())
+  id          String          @id @default(cuid())
+  userId      String
+  date        DateTime        @default(now())  // Allows daily grouping
+  createdAt   DateTime        @default(now())
+
+  // Relations
+  user        User            @relation(fields: [userId], references: [id])
+  entries     WorkoutEntry[]  // 👈 Flexible workouts
+}
+
+model WorkoutEntry {
+  id         String       @id @default(cuid())
+  workoutId  String
+  type       WorkoutType
+  count      Int
+  createdAt  DateTime     @default(now())
+
+  workout    Workout      @relation(fields: [workoutId], references: [id])
 }
 
 model Activity {
-  id        String     @id @default(cuid())
-  user      User       @relation(fields: [userId], references: [id])
-  userId    String
-  action    String     // e.g., "Did 50 pushups"
-  createdAt DateTime   @default(now())
+  id         String     @id @default(cuid())
+  userId     String
+  action     String
+  createdAt  DateTime   @default(now())
+
+  user       User       @relation(fields: [userId], references: [id])
 }
 
 enum WorkoutType {
-  PUSHUP
+  PUSHUPS
   SQUAT
   BURPEE
+  JUMPING_JACKS
+  LUNGES
+  PLANK
+  // 🆕 Add more here anytime
 }

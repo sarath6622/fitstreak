@@ -1,24 +1,41 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+
 export default function DashboardCard() {
-    return (
-      <div className="bg-[#1a1a1a] rounded-2xl p-6 shadow-lg space-y-4">
-        <h2 className="text-lg font-semibold">Today's Workout</h2>
-        <div className="grid grid-cols-3 text-center gap-4">
-          <div>
-            <p className="text-sm text-gray-400">Pushups</p>
-            <p className="text-2xl font-bold text-[#32ffc3]">50</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Squats</p>
-            <p className="text-2xl font-bold text-[#32ffc3]">40</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Burpees</p>
-            <p className="text-2xl font-bold text-[#32ffc3]">30</p>
-          </div>
+  const [data, setData] = useState({ pushups: 0, squats: 0, burpees: 0 });
+
+  useEffect(() => {
+    const fetchWorkout = async () => {
+      const res = await fetch('/api/workout/today');
+      if (res.ok) {
+        const result = await res.json();
+        setData(result);
+      }
+    };
+    fetchWorkout();
+  }, []);
+
+  return (
+    <Card className="bg-[#1a1a1a] text-white shadow-xl w-full max-w-md mx-auto">
+      <CardHeader>
+        <h2 className="text-xl font-semibold">Today's Workout</h2>
+      </CardHeader>
+      <CardContent className="grid grid-cols-3 text-center gap-4">
+        <div>
+          <p className="text-sm text-gray-400">Pushups</p>
+          <p className="text-2xl font-bold text-[#32ffc3]">{data.pushups}</p>
         </div>
-        <button className="w-full mt-4 bg-gradient-to-r from-[#32ffc3] to-[#22c1c3] px-4 py-2 rounded-lg font-semibold">
-          + Log Workout
-        </button>
-      </div>
-    );
-  }
+        <div>
+          <p className="text-sm text-gray-400">Squats</p>
+          <p className="text-2xl font-bold text-[#32ffc3]">{data.squats}</p>
+        </div>
+        <div>
+          <p className="text-sm text-gray-400">Burpees</p>
+          <p className="text-2xl font-bold text-[#32ffc3]">{data.burpees}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
