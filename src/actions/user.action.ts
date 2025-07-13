@@ -6,6 +6,10 @@ import { currentUser } from '@clerk/nextjs/server';
 export async function syncUserToDatabase() {
   try {
     const clerkUser = await currentUser();
+    console.log("Clerk User:", clerkUser);
+    if (!clerkUser) {
+      return { error: 'Unauthorized - No Clerk user' };
+    }
 
     if (!clerkUser) return { error: 'Unauthorized' };
 
