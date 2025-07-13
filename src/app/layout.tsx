@@ -7,6 +7,7 @@ import {
 } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,6 +39,7 @@ export default function RootLayout({
           <MobileNavBar />
         </body>
       </html>
+      <Toaster richColors position="top-right" /> 
     </ClerkProvider>
   )
 }
